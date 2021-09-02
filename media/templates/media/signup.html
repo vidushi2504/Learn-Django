@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block nav_btn1 %}
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-outline-primary ml-2" data-toggle="modal" data-target="#login">
+  Login
+</button>
+{% endblock%}
+{% block title %} Move {% endblock %}
+{% block body %} 
+<div class="container my-4">
+	<h3>Sign Up</h3>
+	<form method='Post' action='/signup'>
+		{% csrf_token %}
+
+	  <div class="form-group my-4">
+	    <label for="email">Email address</label>
+	    <input type="email" class="form-control" id="email" placeholder="" name="email">
+	  </div>
+
+	  <div class="form-group my-4">
+	    <label for="name">Name</label>
+	    <input type="text" class="form-control" id="name" placeholder="" name="name">
+	  </div>
+
+	  <div class="form-group my-4">
+	    <label for="username">Username</label>
+	    <input type="text" class="form-control" id="username" placeholder="" name="username">
+	  </div>
+
+	  <div class="form-group my-4">
+	    <label for="password">Password</label>
+	    <input type="password" class="form-control" id="password" placeholder="" name="password">
+	  </div>
+
+	  <div class="form-group my-4">
+	    <label for="confirmpassword">Confirm Password</label>
+	    <input type="password" class="form-control" id="confirmpassword" placeholder="" name="confirmpassword">
+	  </div>
+
+	  <button type="submit" class="btn btn-primary">Sign Up</button>
+
+	</form>
+</div>
+{% endblock %}
+{% block js %}
+<script>
+  
+</script> 
+{% endblock %}
+
+{% block modals %}
+
+<!-- Modal -->
+<div class="modal fade" id="login" tabindex="-1" aria-labelledby="label" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="login">Login</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form method="POST" action='/login'>
+        {% csrf_token %}
+		  <div class="form-group">
+		    <label for="username">Username</label>
+		    <input type="text" class="form-control" id="username" aria-describedby="emailHelp" required name='username'>
+		  </div>
+		  <div class="form-group">
+		    <label for="password">Password</label>
+		    <input type="password" class="form-control" id="password" name="password" required>
+		  </div>
+		  <button type="login" class="btn btn-primary">Login</button>
+		</form>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock modals %}

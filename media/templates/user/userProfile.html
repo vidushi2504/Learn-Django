@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+
+{% block css %}
+.userImage
+{
+	width:200px;
+	height:200px;
+	border-radius:50%;
+}
+.info
+{
+	padding-top:5%;
+	padding-left:4%;
+}
+#post_img
+{
+  width:620px;      /*460*/
+  height:400px;     /*360*/
+}
+.container
+{
+  width:700px;      /*535*/
+}
+#follow:hover
+{
+  color:white;
+}
+{% endblock css %}
+
+{% block body %}
+<div class="container my-4">
+<div class="media">
+  <img src="{{userImg.url}}" class="align-self-start mr-3 userImage" alt="...">
+  <div class="media-body info">
+    <h4 class="mt-0">{{user_obj.username}}</h4><br>
+    <p>Followers: {{followers}} <br>Following: {{following}}</p>
+    {% if connection and not user_obj == request.user %}
+    <a type="button" class="btn btn-outline-primary" id="follow" role="button" href="{% url 'follow' user_obj.username %}">Following</a>
+    {% elif not connection and not user_obj == request.user %}
+    <a type="button" class="btn btn-outline-primary" id="follow" role="button" href="{% url 'follow' user_obj.username %}">Follow</a>
+    {% endif %}
+  </div> 
+</div>
+<br><br><br>
+<div>
+	{% for i in posts %}
+<div class="container my-4" id="{{i.id}}">
+<div class="card">
+  <div class="card-header">
+    <a href="{% url 'userProfile' i.user %}" style="color:black;">{{i.user}}</a>  <small>{{i.date.date}}</small>
+  </div>
+  <div class="card-body">
+    <h5 class="card-title">{{i.caption}}</h5>
+    {% if i.image %}
+    <img src="{{i.image.url}}" alt="Image" id="post_img">
+    {% endif %}
+    <hr size='30px'>
+
+    {% if i in liked_post %}
+    <a type="button" class="btn btn-primary mr-3 like" id="like{{ i.id }}" role="button" href="{% url 'like_dislike' i.id %}">Liked</a>
+    {% else %}
+    <a type="button" class="btn btn-primary mr-3 like" id="like{{ i.id }}" role="button" href="{% url 'like_dislike' i.id %}">Like</a>
+    {% endif %}
+    
+    <a role="button" class="btn btn-primary mr-4" href="{% url 'comment' %}">Comment</a>
+    {% if i.user == request.user %}
+    <a class="btn btn-danger ml-6 delete" href="{% url 'delPost' i.id %}" id="{{i.id}}">Delete</a>
+    {% endif %}
+  </div>
+</div>
+</div>
+{% endfor %}
+</div>
+{% endblock body %}
+
+{% block js %}
+<script type="text/javascript">
+  $("#follow").click(function(e){
+    e.preventDefault();               //page won't refresh
+    var href=this.href;
+    $.ajax({
+      url : href,
+      success:function(response){
+        if(response["following"])
+        {
+          $("#follow").html("Following");
+        }
+        else
+        {
+          $("#follow").html("Follow");
+        }
+      }
+    })
+});
+  $(".delete").click(function(e) { 
+    var id =  this.id ; 
+    var href = this.href;
+    console.log(href, id);  // get href from link
+    e.preventDefault();  // don't follow the link i.e stay on the same page. So, page is not refreshed.
+
+    $.ajax({
+        url: href,
+        data: {},
+    });
+
+    $("#"+id).fadeOut(1000);
+
+  }); 
+
+  $(".like").click(function(e){
+    e.preventDefault();               //page won't refresh
+    var href=this.href;
+    var id=this.id;
+    $.ajax({
+      url : href,
+      success:function(response){
+        var s=("#").concat(id);
+        if(response["liked"])
+        {
+          $(s).html("Liked");
+        }
+        else
+        {
+          $(s).html("Like");
+        }
+      }
+    })
+});
+</script>
+{% endblock js %}
+
